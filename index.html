@@ -126,27 +126,36 @@
       grid.appendChild(box);
     });
 
-    function pad(num) {
-      return num.toString().padStart(2, '0');
+    function pad(n) { return n.toString().padStart(2, '0'); }
+
+    async function fetchTime(zone) {
+      const url = `https://opentimeapi.com/api/timezone/${encodeURIComponent(zone)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('API error');
+      return res.json(); // 返回 { datetime: "...", timezone_name: ... }
     }
 
-    function updateAllTimes() {
+    async function updateAll() {
       countries.forEach((country, index) => {
-        const date = new Date().toLocaleString("en-US", { timeZone: country.timeZone });
-        const time = new Date(date);
-        const formattedTime = `${pad(time.getHours())}:${pad(time.getMinutes())}:${pad(time.getSeconds())}`;
-        document.getElementById(`time-${index}`).innerText = formattedTime;
+        const el = document.getElementById(`time-${index}`);
+        fetchTime(country.timeZone)
+          .then(data => {
+            const dt = new Date(data.datetime);
+            const h = pad(dt.getHours()), m = pad(dt.getMinutes()), s = pad(dt.getSeconds());
+            el.innerText = `${h}:${m}:${s}`;
+          })
+          .catch(() => el.innerText = 'Error');
       });
     }
 
-    updateAllTimes();
-    setInterval(updateAllTimes, 1000);
+    updateAll();
+    setInterval(updateAll, 1000); // 每秒更新
 
-    document.getElementById('searchBar').addEventListener('input', (e) => {
-      const value = e.target.value.toLowerCase();
+    document.getElementById('searchBar').addEventListener('input', e => {
+      const v = e.target.value.toLowerCase();
       Array.from(grid.children).forEach(child => {
         const name = child.querySelector('.countryName').innerText.toLowerCase();
-        child.style.display = name.includes(value) ? 'block' : 'none';
+        child.style.display = name.includes(v) ? '' : 'none';
       });
     });
   </script>
