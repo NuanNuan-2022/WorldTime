@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>World Map Time Viewer</title>
+  <title>WorldTimeMap</title>
   <style>
     html, body {
       margin: 0;
@@ -25,16 +25,28 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
       z-index: 10;
     }
+    #timePage {
+      display: none;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3em;
+      background: #fff;
+      flex-direction: column;
+    }
   </style>
   <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-geoman-free@2.13.0/dist/leaflet-geoman.min.js"></script>
-  <script src="https://unpkg.com/world-atlas/countries-50m.json"></script>
-  <script src="https://unpkg.com/topojson-client@3"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
 </head>
 <body>
   <div id="infoBox">Click a country to view current local time</div>
   <div id="map"></div>
+  <div id="timePage">
+    <div id="countryName"></div>
+    <div id="liveTime"></div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
@@ -49,10 +61,9 @@
     function style(feature) {
       return {
         fillColor: '#FFEDA0',
-        weight: 2,
+        weight: 1,
         opacity: 1,
-        color: 'white',
-        dashArray: '3',
+        color: 'gray',
         fillOpacity: 0.7
       };
     }
@@ -62,10 +73,8 @@
       layer.setStyle({
         weight: 3,
         color: '#666',
-        dashArray: '',
         fillOpacity: 0.9
       });
-
       if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
         layer.bringToFront();
       }
@@ -73,10 +82,6 @@
 
     function resetHighlight(e) {
       geojson.resetStyle(e.target);
-    }
-
-    function zoomToFeature(e) {
-      map.fitBounds(e.target.getBounds());
     }
 
     function onEachFeature(feature, layer) {
@@ -89,18 +94,23 @@
 
     function showTime(e) {
       const latlng = e.latlng;
-      const countryName = e.target.feature.properties.name;
+      const countryName = e.target.feature.properties.ADMIN || e.target.feature.properties.name;
 
-      fetch(`https://timeapi.io/api/Time/current/coordinate?latitude=${latlng.lat}&longitude=${latlng.lng}`)
-        .then(res => res.json())
-        .then(data => {
-          const infoBox = document.getElementById('infoBox');
-          infoBox.innerHTML = `<strong>${countryName}</strong><br/>Local Time: ${data.dateTime}`;
-        })
-        .catch(() => {
-          const infoBox = document.getElementById('infoBox');
-          infoBox.innerHTML = `<strong>${countryName}</strong><br/>Time unavailable.`;
-        });
+      document.getElementById('map').style.display = 'none';
+      document.getElementById('infoBox').style.display = 'none';
+      document.getElementById('timePage').style.display = 'flex';
+      document.getElementById('countryName').innerText = countryName;
+
+      function updateClock() {
+        fetch(`https://timeapi.io/api/Time/current/coordinate?latitude=${latlng.lat}&longitude=${latlng.lng}`)
+          .then(res => res.json())
+          .then(data => {
+            const timeStr = data.time.replace(/:\d+$/, '');
+            document.getElementById('liveTime').innerText = timeStr;
+          });
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
     }
 
     fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
