@@ -128,12 +128,12 @@
 
     function pad(n) { return n.toString().padStart(2, '0'); }
 
-    async function fetchTime(zone) {
-      const url = `https://opentimeapi.com/api/timezone/${encodeURIComponent(zone)}`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('API error');
-      return res.json(); // 返回 { datetime: "...", timezone_name: ... }
-    }
+async function fetchTime(zone) {
+  const url = `https://worldtimeapi.org/api/timezone/${encodeURIComponent(zone)}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('API error');
+  return res.json(); // returns { datetime: "2025-06-16T12:30:45.123456+01:00", ... }
+}
 
     async function updateAll() {
       countries.forEach((country, index) => {
