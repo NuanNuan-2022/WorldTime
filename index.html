@@ -51,67 +51,67 @@
 
   <script>
     const countries = [
-      { name: "Afghanistan", lat: 34.5, lng: 69.2 },
-      { name: "Albania", lat: 41.3, lng: 19.8 },
-      { name: "Algeria", lat: 36.7, lng: 3.2 },
-      { name: "Andorra", lat: 42.5, lng: 1.5 },
-      { name: "Angola", lat: -8.8, lng: 13.2 },
-      { name: "Argentina", lat: -34.6, lng: -58.4 },
-      { name: "Armenia", lat: 40.2, lng: 44.5 },
-      { name: "Australia", lat: -35.3, lng: 149.1 },
-      { name: "Austria", lat: 48.2, lng: 16.4 },
-      { name: "Azerbaijan", lat: 40.4, lng: 49.9 },
-      { name: "Bangladesh", lat: 23.8, lng: 90.4 },
-      { name: "Belarus", lat: 53.9, lng: 27.6 },
-      { name: "Belgium", lat: 50.8, lng: 4.3 },
-      { name: "Bhutan", lat: 27.5, lng: 89.6 },
-      { name: "Brazil", lat: -15.8, lng: -47.9 },
-      { name: "Cambodia", lat: 11.6, lng: 104.9 },
-      { name: "Cameroon", lat: 3.9, lng: 11.5 },
-      { name: "Canada", lat: 45.4, lng: -75.7 },
-      { name: "Chile", lat: -33.4, lng: -70.7 },
-      { name: "China", lat: 39.9, lng: 116.4 },
-      { name: "Colombia", lat: 4.7, lng: -74.1 },
-      { name: "Cuba", lat: 23.1, lng: -82.4 },
-      { name: "Czech Republic", lat: 50.1, lng: 14.4 },
-      { name: "Denmark", lat: 55.7, lng: 12.6 },
-      { name: "Egypt", lat: 30.0, lng: 31.2 },
-      { name: "Finland", lat: 60.2, lng: 24.9 },
-      { name: "France", lat: 48.8, lng: 2.3 },
-      { name: "Germany", lat: 52.5, lng: 13.4 },
-      { name: "Greece", lat: 37.9, lng: 23.7 },
-      { name: "India", lat: 28.6, lng: 77.2 },
-      { name: "Indonesia", lat: -6.2, lng: 106.8 },
-      { name: "Iran", lat: 35.7, lng: 51.4 },
-      { name: "Iraq", lat: 33.3, lng: 44.4 },
-      { name: "Ireland", lat: 53.3, lng: -6.3 },
-      { name: "Israel", lat: 31.8, lng: 35.0 },
-      { name: "Italy", lat: 41.9, lng: 12.5 },
-      { name: "Japan", lat: 35.6, lng: 139.7 },
-      { name: "Kenya", lat: -1.3, lng: 36.8 },
-      { name: "Mexico", lat: 19.4, lng: -99.1 },
-      { name: "Nigeria", lat: 9.1, lng: 7.5 },
-      { name: "Norway", lat: 59.9, lng: 10.7 },
-      { name: "Pakistan", lat: 33.7, lng: 73.1 },
-      { name: "Palestine", lat: 31.9, lng: 35.2 },
-      { name: "Philippines", lat: 14.6, lng: 121.0 },
-      { name: "Poland", lat: 52.2, lng: 21.0 },
-      { name: "Portugal", lat: 38.7, lng: -9.1 },
-      { name: "Russia", lat: 55.7, lng: 37.6 },
-      { name: "Saudi Arabia", lat: 24.7, lng: 46.7 },
-      { name: "South Africa", lat: -25.7, lng: 28.2 },
-      { name: "South Korea", lat: 37.5, lng: 127.0 },
-      { name: "Spain", lat: 40.4, lng: -3.7 },
-      { name: "Sweden", lat: 59.3, lng: 18.1 },
-      { name: "Switzerland", lat: 46.9, lng: 7.4 },
-      { name: "Syria", lat: 33.5, lng: 36.3 },
-      { name: "Thailand", lat: 13.7, lng: 100.5 },
-      { name: "Turkey", lat: 39.9, lng: 32.9 },
-      { name: "Ukraine", lat: 50.4, lng: 30.5 },
-      { name: "United Kingdom", lat: 51.5, lng: -0.1 },
-      { name: "United States", lat: 38.9, lng: -77.0 },
-      { name: "Vatican City", lat: 41.9, lng: 12.5 },
-      { name: "Vietnam", lat: 21.0, lng: 105.8 }
+      { name: "Afghanistan", timeZone: "Asia/Kabul" },
+      { name: "Albania", timeZone: "Europe/Tirane" },
+      { name: "Algeria", timeZone: "Africa/Algiers" },
+      { name: "Andorra", timeZone: "Europe/Andorra" },
+      { name: "Angola", timeZone: "Africa/Luanda" },
+      { name: "Argentina", timeZone: "America/Argentina/Buenos_Aires" },
+      { name: "Armenia", timeZone: "Asia/Yerevan" },
+      { name: "Australia", timeZone: "Australia/Sydney" },
+      { name: "Austria", timeZone: "Europe/Vienna" },
+      { name: "Azerbaijan", timeZone: "Asia/Baku" },
+      { name: "Bangladesh", timeZone: "Asia/Dhaka" },
+      { name: "Belarus", timeZone: "Europe/Minsk" },
+      { name: "Belgium", timeZone: "Europe/Brussels" },
+      { name: "Bhutan", timeZone: "Asia/Thimphu" },
+      { name: "Brazil", timeZone: "America/Sao_Paulo" },
+      { name: "Cambodia", timeZone: "Asia/Phnom_Penh" },
+      { name: "Cameroon", timeZone: "Africa/Douala" },
+      { name: "Canada", timeZone: "America/Toronto" },
+      { name: "Chile", timeZone: "America/Santiago" },
+      { name: "China", timeZone: "Asia/Shanghai" },
+      { name: "Colombia", timeZone: "America/Bogota" },
+      { name: "Cuba", timeZone: "America/Havana" },
+      { name: "Czech Republic", timeZone: "Europe/Prague" },
+      { name: "Denmark", timeZone: "Europe/Copenhagen" },
+      { name: "Egypt", timeZone: "Africa/Cairo" },
+      { name: "Finland", timeZone: "Europe/Helsinki" },
+      { name: "France", timeZone: "Europe/Paris" },
+      { name: "Germany", timeZone: "Europe/Berlin" },
+      { name: "Greece", timeZone: "Europe/Athens" },
+      { name: "India", timeZone: "Asia/Kolkata" },
+      { name: "Indonesia", timeZone: "Asia/Jakarta" },
+      { name: "Iran", timeZone: "Asia/Tehran" },
+      { name: "Iraq", timeZone: "Asia/Baghdad" },
+      { name: "Ireland", timeZone: "Europe/Dublin" },
+      { name: "Israel", timeZone: "Asia/Jerusalem" },
+      { name: "Italy", timeZone: "Europe/Rome" },
+      { name: "Japan", timeZone: "Asia/Tokyo" },
+      { name: "Kenya", timeZone: "Africa/Nairobi" },
+      { name: "Mexico", timeZone: "America/Mexico_City" },
+      { name: "Nigeria", timeZone: "Africa/Lagos" },
+      { name: "Norway", timeZone: "Europe/Oslo" },
+      { name: "Pakistan", timeZone: "Asia/Karachi" },
+      { name: "Palestine", timeZone: "Asia/Gaza" },
+      { name: "Philippines", timeZone: "Asia/Manila" },
+      { name: "Poland", timeZone: "Europe/Warsaw" },
+      { name: "Portugal", timeZone: "Europe/Lisbon" },
+      { name: "Russia", timeZone: "Europe/Moscow" },
+      { name: "Saudi Arabia", timeZone: "Asia/Riyadh" },
+      { name: "South Africa", timeZone: "Africa/Johannesburg" },
+      { name: "South Korea", timeZone: "Asia/Seoul" },
+      { name: "Spain", timeZone: "Europe/Madrid" },
+      { name: "Sweden", timeZone: "Europe/Stockholm" },
+      { name: "Switzerland", timeZone: "Europe/Zurich" },
+      { name: "Syria", timeZone: "Asia/Damascus" },
+      { name: "Thailand", timeZone: "Asia/Bangkok" },
+      { name: "Turkey", timeZone: "Europe/Istanbul" },
+      { name: "Ukraine", timeZone: "Europe/Kyiv" },
+      { name: "United Kingdom", timeZone: "Europe/London" },
+      { name: "United States", timeZone: "America/New_York" },
+      { name: "Vatican City", timeZone: "Europe/Vatican" },
+      { name: "Vietnam", timeZone: "Asia/Ho_Chi_Minh" }
     ].sort((a, b) => a.name.localeCompare(b.name));
 
     const grid = document.getElementById('countryGrid');
@@ -126,21 +126,21 @@
       grid.appendChild(box);
     });
 
-    function updateTime(index, lat, lng) {
-      fetch(`https://timeapi.io/api/Time/current/coordinate?latitude=${lat}&longitude=${lng}`)
-        .then(res => res.json())
-        .then(data => {
-          const timeStr = data.time.replace(/:\d+$/, '');
-          document.getElementById(`time-${index}`).innerText = timeStr;
-        });
+    function pad(num) {
+      return num.toString().padStart(2, '0');
     }
 
-    function refreshAllTimes() {
-      countries.forEach((c, i) => updateTime(i, c.lat, c.lng));
+    function updateAllTimes() {
+      countries.forEach((country, index) => {
+        const date = new Date().toLocaleString("en-US", { timeZone: country.timeZone });
+        const time = new Date(date);
+        const formattedTime = `${pad(time.getHours())}:${pad(time.getMinutes())}:${pad(time.getSeconds())}`;
+        document.getElementById(`time-${index}`).innerText = formattedTime;
+      });
     }
 
-    refreshAllTimes();
-    setInterval(refreshAllTimes, 1000);
+    updateAllTimes();
+    setInterval(updateAllTimes, 1000);
 
     document.getElementById('searchBar').addEventListener('input', (e) => {
       const value = e.target.value.toLowerCase();
