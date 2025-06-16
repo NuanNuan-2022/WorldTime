@@ -126,36 +126,27 @@
       grid.appendChild(box);
     });
 
-    function pad(n) { return n.toString().padStart(2, '0'); }
+    function pad(num) {
+      return num.toString().padStart(2, '0');
+    }
 
-async function fetchTime(zone) {
-  const url = `https://worldtimeapi.org/api/timezone/${encodeURIComponent(zone)}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('API error');
-  return res.json(); // returns { datetime: "2025-06-16T12:30:45.123456+01:00", ... }
-}
-
-    async function updateAll() {
+    function updateAllTimes() {
       countries.forEach((country, index) => {
-        const el = document.getElementById(`time-${index}`);
-        fetchTime(country.timeZone)
-          .then(data => {
-            const dt = new Date(data.datetime);
-            const h = pad(dt.getHours()), m = pad(dt.getMinutes()), s = pad(dt.getSeconds());
-            el.innerText = `${h}:${m}:${s}`;
-          })
-          .catch(() => el.innerText = 'Error');
+        const date = new Date().toLocaleString("en-US", { timeZone: country.timeZone });
+        const time = new Date(date);
+        const formattedTime = `${pad(time.getHours())}:${pad(time.getMinutes())}:${pad(time.getSeconds())}`;
+        document.getElementById(`time-${index}`).innerText = formattedTime;
       });
     }
 
-    updateAll();
-    setInterval(updateAll, 1000); // 每秒更新
+    updateAllTimes();
+    setInterval(updateAllTimes, 1000);
 
-    document.getElementById('searchBar').addEventListener('input', e => {
-      const v = e.target.value.toLowerCase();
+    document.getElementById('searchBar').addEventListener('input', (e) => {
+      const value = e.target.value.toLowerCase();
       Array.from(grid.children).forEach(child => {
         const name = child.querySelector('.countryName').innerText.toLowerCase();
-        child.style.display = name.includes(v) ? '' : 'none';
+        child.style.display = name.includes(value) ? 'block' : 'none';
       });
     });
   </script>
