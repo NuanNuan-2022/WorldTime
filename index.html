@@ -2,125 +2,153 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WorldTimeMap</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WorldTimeMap - Live Time</title>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
+    body {
       font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
     }
-    #map {
-      height: 100vh;
+    h1 {
+      text-align: center;
+    }
+    #searchBar {
       width: 100%;
-    }
-    #infoBox {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(255, 255, 255, 0.9);
       padding: 10px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      z-index: 10;
+      font-size: 1em;
+      margin-bottom: 20px;
+      box-sizing: border-box;
     }
-    #timePage {
-      display: none;
-      height: 100vh;
-      width: 100vw;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 3em;
-      background: #fff;
-      flex-direction: column;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+    .countryBox {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 15px;
+      text-align: center;
+    }
+    .countryName {
+      font-weight: bold;
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+    .timeValue {
+      font-size: 1.5em;
+      color: #333;
     }
   </style>
-  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
 </head>
 <body>
-  <div id="infoBox">Click a country to view current local time</div>
-  <div id="map"></div>
-  <div id="timePage">
-    <div id="countryName"></div>
-    <div id="liveTime"></div>
-  </div>
+  <h1>World Time Viewer</h1>
+  <input type="text" id="searchBar" placeholder="Search for a country...">
+  <div id="countryGrid" class="grid"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-    const map = L.map('map').setView([20, 0], 2);
+    const countries = [
+      { name: "Afghanistan", lat: 34.5, lng: 69.2 },
+      { name: "Albania", lat: 41.3, lng: 19.8 },
+      { name: "Algeria", lat: 36.7, lng: 3.2 },
+      { name: "Andorra", lat: 42.5, lng: 1.5 },
+      { name: "Angola", lat: -8.8, lng: 13.2 },
+      { name: "Argentina", lat: -34.6, lng: -58.4 },
+      { name: "Armenia", lat: 40.2, lng: 44.5 },
+      { name: "Australia", lat: -35.3, lng: 149.1 },
+      { name: "Austria", lat: 48.2, lng: 16.4 },
+      { name: "Azerbaijan", lat: 40.4, lng: 49.9 },
+      { name: "Bangladesh", lat: 23.8, lng: 90.4 },
+      { name: "Belarus", lat: 53.9, lng: 27.6 },
+      { name: "Belgium", lat: 50.8, lng: 4.3 },
+      { name: "Bhutan", lat: 27.5, lng: 89.6 },
+      { name: "Brazil", lat: -15.8, lng: -47.9 },
+      { name: "Cambodia", lat: 11.6, lng: 104.9 },
+      { name: "Cameroon", lat: 3.9, lng: 11.5 },
+      { name: "Canada", lat: 45.4, lng: -75.7 },
+      { name: "Chile", lat: -33.4, lng: -70.7 },
+      { name: "China", lat: 39.9, lng: 116.4 },
+      { name: "Colombia", lat: 4.7, lng: -74.1 },
+      { name: "Cuba", lat: 23.1, lng: -82.4 },
+      { name: "Czech Republic", lat: 50.1, lng: 14.4 },
+      { name: "Denmark", lat: 55.7, lng: 12.6 },
+      { name: "Egypt", lat: 30.0, lng: 31.2 },
+      { name: "Finland", lat: 60.2, lng: 24.9 },
+      { name: "France", lat: 48.8, lng: 2.3 },
+      { name: "Germany", lat: 52.5, lng: 13.4 },
+      { name: "Greece", lat: 37.9, lng: 23.7 },
+      { name: "India", lat: 28.6, lng: 77.2 },
+      { name: "Indonesia", lat: -6.2, lng: 106.8 },
+      { name: "Iran", lat: 35.7, lng: 51.4 },
+      { name: "Iraq", lat: 33.3, lng: 44.4 },
+      { name: "Ireland", lat: 53.3, lng: -6.3 },
+      { name: "Israel", lat: 31.8, lng: 35.0 },
+      { name: "Italy", lat: 41.9, lng: 12.5 },
+      { name: "Japan", lat: 35.6, lng: 139.7 },
+      { name: "Kenya", lat: -1.3, lng: 36.8 },
+      { name: "Mexico", lat: 19.4, lng: -99.1 },
+      { name: "Nigeria", lat: 9.1, lng: 7.5 },
+      { name: "Norway", lat: 59.9, lng: 10.7 },
+      { name: "Pakistan", lat: 33.7, lng: 73.1 },
+      { name: "Palestine", lat: 31.9, lng: 35.2 },
+      { name: "Philippines", lat: 14.6, lng: 121.0 },
+      { name: "Poland", lat: 52.2, lng: 21.0 },
+      { name: "Portugal", lat: 38.7, lng: -9.1 },
+      { name: "Russia", lat: 55.7, lng: 37.6 },
+      { name: "Saudi Arabia", lat: 24.7, lng: 46.7 },
+      { name: "South Africa", lat: -25.7, lng: 28.2 },
+      { name: "South Korea", lat: 37.5, lng: 127.0 },
+      { name: "Spain", lat: 40.4, lng: -3.7 },
+      { name: "Sweden", lat: 59.3, lng: 18.1 },
+      { name: "Switzerland", lat: 46.9, lng: 7.4 },
+      { name: "Syria", lat: 33.5, lng: 36.3 },
+      { name: "Thailand", lat: 13.7, lng: 100.5 },
+      { name: "Turkey", lat: 39.9, lng: 32.9 },
+      { name: "Ukraine", lat: 50.4, lng: 30.5 },
+      { name: "United Kingdom", lat: 51.5, lng: -0.1 },
+      { name: "United States", lat: 38.9, lng: -77.0 },
+      { name: "Vatican City", lat: 41.9, lng: 12.5 },
+      { name: "Vietnam", lat: 21.0, lng: 105.8 }
+    ].sort((a, b) => a.name.localeCompare(b.name));
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+    const grid = document.getElementById('countryGrid');
 
-    let geojson;
+    countries.forEach((country, index) => {
+      const box = document.createElement('div');
+      box.className = 'countryBox';
+      box.innerHTML = `
+        <div class="countryName">${country.name}</div>
+        <div class="timeValue" id="time-${index}">Loading...</div>
+      `;
+      grid.appendChild(box);
+    });
 
-    function style(feature) {
-      return {
-        fillColor: '#FFEDA0',
-        weight: 1,
-        opacity: 1,
-        color: 'gray',
-        fillOpacity: 0.7
-      };
+    function updateTime(index, lat, lng) {
+      fetch(`https://timeapi.io/api/Time/current/coordinate?latitude=${lat}&longitude=${lng}`)
+        .then(res => res.json())
+        .then(data => {
+          const timeStr = data.time.replace(/:\d+$/, '');
+          document.getElementById(`time-${index}`).innerText = timeStr;
+        });
     }
 
-    function highlightFeature(e) {
-      const layer = e.target;
-      layer.setStyle({
-        weight: 3,
-        color: '#666',
-        fillOpacity: 0.9
+    function refreshAllTimes() {
+      countries.forEach((c, i) => updateTime(i, c.lat, c.lng));
+    }
+
+    refreshAllTimes();
+    setInterval(refreshAllTimes, 1000);
+
+    document.getElementById('searchBar').addEventListener('input', (e) => {
+      const value = e.target.value.toLowerCase();
+      Array.from(grid.children).forEach(child => {
+        const name = child.querySelector('.countryName').innerText.toLowerCase();
+        child.style.display = name.includes(value) ? 'block' : 'none';
       });
-      if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-        layer.bringToFront();
-      }
-    }
-
-    function resetHighlight(e) {
-      geojson.resetStyle(e.target);
-    }
-
-    function onEachFeature(feature, layer) {
-      layer.on({
-        mouseover: highlightFeature,
-        mouseout: resetHighlight,
-        click: showTime
-      });
-    }
-
-    function showTime(e) {
-      const latlng = e.latlng;
-      const countryName = e.target.feature.properties.ADMIN || e.target.feature.properties.name;
-
-      document.getElementById('map').style.display = 'none';
-      document.getElementById('infoBox').style.display = 'none';
-      document.getElementById('timePage').style.display = 'flex';
-      document.getElementById('countryName').innerText = countryName;
-
-      function updateClock() {
-        fetch(`https://timeapi.io/api/Time/current/coordinate?latitude=${latlng.lat}&longitude=${latlng.lng}`)
-          .then(res => res.json())
-          .then(data => {
-            const timeStr = data.time.replace(/:\d+$/, '');
-            document.getElementById('liveTime').innerText = timeStr;
-          });
-      }
-      updateClock();
-      setInterval(updateClock, 1000);
-    }
-
-    fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
-      .then(res => res.json())
-      .then(data => {
-        geojson = L.geoJson(data, {
-          style: style,
-          onEachFeature: onEachFeature
-        }).addTo(map);
-      });
+    });
   </script>
 </body>
 </html>
