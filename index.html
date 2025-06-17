@@ -1,56 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WorldTimeMap - Live Time</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-    }
-    #searchBar {
-      width: 100%;
-      padding: 10px;
-      font-size: 1em;
-      margin-bottom: 20px;
-      box-sizing: border-box;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-    }
-    .countryBox {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      padding: 15px;
-      text-align: center;
-    }
-    .countryName {
-      font-weight: bold;
-      font-size: 1.2em;
-      margin-bottom: 10px;
-    }
-    .timeValue {
-      font-size: 1.5em;
-      color: #333;
-    }
-  </style>
-</head>
-<body>
-  <h1>World Time Viewer</h1>
-  <input type="text" id="searchBar" placeholder="Search for a country...">
-  <div id="countryGrid" class="grid"></div>
-
-  <script>
-    const countries = [
+<script>
+const countries = [
       { name: "Afghanistan", timeZone: "Asia/Kabul" },
       { name: "Albania", timeZone: "Europe/Tirane" },
       { name: "Algeria", timeZone: "Africa/Algiers" },
@@ -112,43 +61,62 @@
       { name: "United States", timeZone: "America/New_York" },
       { name: "Vatican City", timeZone: "Europe/Vatican" },
       { name: "Vietnam", timeZone: "Asia/Ho_Chi_Minh" }
-    ].sort((a, b) => a.name.localeCompare(b.name));
 
-    const grid = document.getElementById('countryGrid');
 
-    countries.forEach((country, index) => {
-      const box = document.createElement('div');
-      box.className = 'countryBox';
-      box.innerHTML = `
-        <div class="countryName">${country.name}</div>
-        <div class="timeValue" id="time-${index}">Loading...</div>
-      `;
-      grid.appendChild(box);
+  
+];
+
+const grid = document.getElementById('countryGrid');
+const countryTimes = [];
+
+function pad(n) {
+  return n.toString().padStart(2, '0');
+}
+
+countries.forEach((country, index) => {
+  const box = document.createElement('div');
+  box.className = 'countryBox';
+  box.innerHTML = `
+    <div class="countryName">${country.name}</div>
+    <div class="timeValue" id="time-${index}">Loading...</div>
+  `;
+  grid.appendChild(box);
+
+  fetch(`https://worldtimeapi.org/api/timezone/${country.timeZone}`)
+    .then(res => res.json())
+    .then(data => {
+      const baseTime = new Date(data.datetime);
+      countryTimes[index] = {
+        baseTime: baseTime,
+        baseTimestamp: Date.now()
+      };
+      updateTime(index);
+    })
+    .catch(() => {
+      document.getElementById(`time-${index}`).innerText = 'Error';
     });
+});
 
-    function pad(num) {
-      return num.toString().padStart(2, '0');
-    }
+function updateTime(index) {
+  const el = document.getElementById(`time-${index}`);
+  const info = countryTimes[index];
+  if (!info) return;
+  const elapsed = Date.now() - info.baseTimestamp;
+  const currentTime = new Date(info.baseTime.getTime() + elapsed);
+  el.innerText = `${pad(currentTime.getHours())}:${pad(currentTime.getMinutes())}:${pad(currentTime.getSeconds())}`;
+}
 
-    function updateAllTimes() {
-      countries.forEach((country, index) => {
-        const date = new Date().toLocaleString("en-US", { timeZone: country.timeZone });
-        const time = new Date(date);
-        const formattedTime = `${pad(time.getHours())}:${pad(time.getMinutes())}:${pad(time.getSeconds())}`;
-        document.getElementById(`time-${index}`).innerText = formattedTime;
-      });
-    }
+setInterval(() => {
+  for (let i = 0; i < countryTimes.length; i++) {
+    updateTime(i);
+  }
+}, 1000);
 
-    updateAllTimes();
-    setInterval(updateAllTimes, 1000);
-
-    document.getElementById('searchBar').addEventListener('input', (e) => {
-      const value = e.target.value.toLowerCase();
-      Array.from(grid.children).forEach(child => {
-        const name = child.querySelector('.countryName').innerText.toLowerCase();
-        child.style.display = name.includes(value) ? 'block' : 'none';
-      });
-    });
-  </script>
-</body>
-</html>
+document.getElementById('searchBar').addEventListener('input', e => {
+  const v = e.target.value.toLowerCase();
+  Array.from(grid.children).forEach(c => {
+    const name = c.querySelector('.countryName').innerText.toLowerCase();
+    c.style.display = name.includes(v) ? '' : 'none';
+  });
+});
+</script>
